@@ -34,16 +34,22 @@ const USERS = [
 ];
 
 function App() {
+  //จุด 1 ที่ปรับ
   const [posts, setPosts] = useState(INITIAL_POSTS);
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState(
+    // สร้าง state favorites โดยใช้ค่าเริ่มต้นจาก localStorage คือมันมีให้มาอยู่แล้วจาก api
+    JSON.parse(localStorage.getItem("favorites") || "[]"), // อ่านค่าจาก localStorage ถ้าไม่มีให้ใช้ [] แทน แล้วแปลง string กลับเป็น array
+  );
 
   function handleToggleFavorite(postId) {
-    setFavorites(
-      (prev) =>
-        prev.includes(postId)
-          ? prev.filter((id) => id !== postId) // เอาออก
-          : [...prev, postId], // เพิ่มเข้า
-    );
+    setFavorites((prev) => {
+      const updated = prev.includes(postId) //เก็บผลลัพธ์ใหม่ไว้ใน updated ก่อน เพื่อเอาไปใช้ต่อ
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId];
+      localStorage.setItem("favorites", JSON.stringify(updated)); //= แปลง array [1,2,3] เป็น string "[1,2,3]" เพราะ localStorage เก็บได้แค่ string
+      // localStorage.setItem = บันทึกลง localStorage ทันทีทุกครั้งที่กดถูกใจ
+      return updated;
+    });
   }
 
   function handleAddPost({ title, body }) {
