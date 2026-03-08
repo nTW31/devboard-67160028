@@ -1,8 +1,10 @@
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import PostList from "./components/PostList";
 import UserCard from "./components/UserCard";
+import AddPostForm from "./components/AddPostForm";
 
-const POSTS = [
+const INITIAL_POSTS = [
   {
     id: 1,
     title: "React คืออะไร?",
@@ -32,9 +34,27 @@ const USERS = [
 ];
 
 function App() {
+  const [posts, setPosts] = useState(INITIAL_POSTS);
+  const [favorites, setFavorites] = useState([]);
+
+  function handleToggleFavorite(postId) {
+    setFavorites(
+      (prev) =>
+        prev.includes(postId)
+          ? prev.filter((id) => id !== postId) // เอาออก
+          : [...prev, postId], // เพิ่มเข้า
+    );
+  }
+
+  function handleAddPost({ title, body }) {
+    const newPost = { id: Date.now(), title, body };
+    setPosts((prev) => [newPost, ...prev]); // เพิ่มไว้บนสุด
+  }
+
   return (
     <div>
-      <Navbar />
+      <Navbar favoriteCount={favorites.length} />
+
       <div
         style={{
           maxWidth: "900px",
@@ -45,22 +65,19 @@ function App() {
           gap: "2rem",
         }}
       >
-        {/* คอลัมน์ซ้าย: โพสต์ */}
+        {/* คอลัมน์ซ้าย */}
         <div>
-          <PostList posts={POSTS} />
+          <AddPostForm onAddPost={handleAddPost} />
+          <PostList
+            posts={posts}
+            favorites={favorites}
+            onToggleFavorite={handleToggleFavorite}
+          />
         </div>
 
-        {/* คอลัมน์ขวา: สมาชิก */}
+        {/* คอลัมน์ขวา */}
         <div>
-          <h2
-            style={{
-              color: "#2d3748",
-              borderBottom: "2px solid #1e40af",
-              paddingBottom: "0.5rem",
-            }}
-          >
-            สมาชิก
-          </h2>
+          <h2>สมาชิก</h2>
           {USERS.map((user) => (
             <UserCard key={user.id} name={user.name} email={user.email} />
           ))}
