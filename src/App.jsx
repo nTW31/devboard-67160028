@@ -1,60 +1,18 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import PostList from "./components/PostList";
-import UserCard from "./components/UserCard";
+import UserList from "./components/UserList";
 import AddPostForm from "./components/AddPostForm";
 
-const INITIAL_POSTS = [
-  {
-    id: 1,
-    title: "React คืออะไร?",
-    body: "React เป็น library สำหรับสร้าง UI ที่ทำให้ code อ่านง่ายและดูแลรักษาได้",
-  },
-  {
-    id: 2,
-    title: "ทำไมต้องใช้ Components?",
-    body: "Components ช่วยให้เราแบ่ง UI ออกเป็นชิ้นเล็ก ๆ ที่ reuse ได้",
-  },
-  {
-    id: 3,
-    title: "JSX คืออะไร?",
-    body: "JSX คือ syntax ที่ช่วยให้เราเขียน HTML ใน JavaScript ได้อย่างสะดวก",
-  },
-  {
-    id: 4,
-    title: "Props ทำงานอย่างไร?",
-    body: "Props คือ argument ที่ส่งให้ component เหมือนกับการส่งพารามิเตอร์ให้ฟังก์ชัน",
-  },
-];
-
-const USERS = [
-  { id: 1, name: "สมชาย ใจดี", email: "somchai@dev.com" },
-  { id: 2, name: "สมหญิง รักเรียน", email: "somying@dev.com" },
-  { id: 3, name: "วิชาญ โค้ดเก่ง", email: "wichan@dev.com" },
-];
-
 function App() {
-  //จุด 1 ที่ปรับ
-  const [posts, setPosts] = useState(INITIAL_POSTS);
-  const [favorites, setFavorites] = useState(
-    // สร้าง state favorites โดยใช้ค่าเริ่มต้นจาก localStorage คือมันมีให้มาอยู่แล้วจาก api
-    JSON.parse(localStorage.getItem("favorites") || "[]"), // อ่านค่าจาก localStorage ถ้าไม่มีให้ใช้ [] แทน แล้วแปลง string กลับเป็น array
-  );
+  const [favorites, setFavorites] = useState([]);
 
   function handleToggleFavorite(postId) {
-    setFavorites((prev) => {
-      const updated = prev.includes(postId) //เก็บผลลัพธ์ใหม่ไว้ใน updated ก่อน เพื่อเอาไปใช้ต่อ
+    setFavorites((prev) =>
+      prev.includes(postId)
         ? prev.filter((id) => id !== postId)
-        : [...prev, postId];
-      localStorage.setItem("favorites", JSON.stringify(updated)); //= แปลง array [1,2,3] เป็น string "[1,2,3]" เพราะ localStorage เก็บได้แค่ string
-      // localStorage.setItem = บันทึกลง localStorage ทันทีทุกครั้งที่กดถูกใจ
-      return updated;
-    });
-  }
-
-  function handleAddPost({ title, body }) {
-    const newPost = { id: Date.now(), title, body };
-    setPosts((prev) => [newPost, ...prev]); // เพิ่มไว้บนสุด
+        : [...prev, postId],
+    );
   }
 
   return (
@@ -71,22 +29,16 @@ function App() {
           gap: "2rem",
         }}
       >
-        {/* คอลัมน์ซ้าย */}
         <div>
-          <AddPostForm onAddPost={handleAddPost} />
+          <AddPostForm onAddPost={() => {}} /> {/* จะเชื่อมใน wk14 */}
           <PostList
-            posts={posts}
             favorites={favorites}
             onToggleFavorite={handleToggleFavorite}
           />
         </div>
 
-        {/* คอลัมน์ขวา */}
         <div>
-          <h2>สมาชิก</h2>
-          {USERS.map((user) => (
-            <UserCard key={user.id} name={user.name} email={user.email} />
-          ))}
+          <UserList />
         </div>
       </div>
     </div>

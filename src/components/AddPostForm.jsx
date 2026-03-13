@@ -33,7 +33,7 @@ function AddPostForm({ onAddPost }) {
         placeholder="หัวข้อโพสต์"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        maxLength={100}
+        maxLength={100} //เพิ่ม จำกัดไม่ให้พิมพ์เกิน 100 ตัวอักษร
         style={{
           width: "100%",
           padding: "0.5rem",
@@ -49,7 +49,7 @@ function AddPostForm({ onAddPost }) {
           textAlign: "right",
           fontSize: "0.8rem",
           marginBottom: "0.5rem",
-          color: 100 - title.length < 10 ? "red" : "#718096",
+          color: 100 - title.length < 10 ? "red" : "#718096", //ถ้าจริงสีแดง ตัวอักษรที่เหลือ เช่น พิมพ์ไป 90 ตัว  เหลือ 10 ถ้าเหลือน้อยกว่าเท่า 10 , ถ้ายังเหลือเยอะ  สีเทา
         }}
       >
         {title.length}/100
