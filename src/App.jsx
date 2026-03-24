@@ -5,20 +5,26 @@ import UserList from "./components/UserList";
 import AddPostForm from "./components/AddPostForm";
 
 function App() {
-  const [favorites, setFavorites] = useState([]);
+  // ลบ posts ออก เพราะ Task3 posts อยู่ใน PostList แล้ว
+  const [favorites, setFavorites] = useState(
+    // อ่านค่าจาก localStorage ถ้าไม่มีให้ใช้ [] แทน แล้วแปลง string กลับเป็น array
+    JSON.parse(localStorage.getItem("favorites") || "[]"),
+  );
 
   function handleToggleFavorite(postId) {
-    setFavorites((prev) =>
-      prev.includes(postId)
-        ? prev.filter((id) => id !== postId)
-        : [...prev, postId],
-    );
+    // ลบ setFavorites อันเก่าออก เหลือแค่อันที่มี localStorage
+    setFavorites((prev) => {
+      const updated = prev.includes(postId) // เก็บผลลัพธ์ใหม่ไว้ใน updated ก่อน
+        ? prev.filter((id) => id !== postId) // เอาออก
+        : [...prev, postId]; // เพิ่มเข้า
+      localStorage.setItem("favorites", JSON.stringify(updated)); // บันทึกลง localStorage ทันที
+      return updated;
+    });
   }
 
   return (
     <div>
       <Navbar favoriteCount={favorites.length} />
-
       <div
         style={{
           maxWidth: "900px",
@@ -30,13 +36,12 @@ function App() {
         }}
       >
         <div>
-          <AddPostForm onAddPost={() => {}} /> {/* จะเชื่อมใน wk14 */}
+          <AddPostForm onAddPost={() => {}} />
           <PostList
             favorites={favorites}
             onToggleFavorite={handleToggleFavorite}
           />
         </div>
-
         <div>
           <UserList />
         </div>
