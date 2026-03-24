@@ -34,8 +34,7 @@ function PostList({ favorites, onToggleFavorite }) {
   );
 
   const sorted = [...filtered].sort(
-    // ⭐⭐ copy array ก่อน แล้ว sort ไม่แก้ของเดิม
-    (a, b) => (sortOrder === "desc" ? b.id - a.id : a.id - b.id),
+    (a, b) => (sortOrder === "desc" ? b.id - a.id : a.id - b.id), // กรณี "desc" = b.id - a.id โพสต์ใหม่กว่า ถ้าเท็จก็ a.id - b.id โพสต์เก่ากว่า
   );
 
   if (loading) return <LoadingSpinner />;
@@ -101,8 +100,8 @@ function PostList({ favorites, onToggleFavorite }) {
         }}
       />
 
-      <button // ⭐⭐ ปุ่ม Sort — กดสลับใหม่/เก่าสุดก่อน
-        onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+      <button
+        onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")} //ถ้ากดปุ่มและถ้าเป็น "desc" เปลี่ยนเป็น "asc" และกลับกัน
         style={{
           color: "black",
           marginBottom: "1rem",
@@ -114,6 +113,7 @@ function PostList({ favorites, onToggleFavorite }) {
           fontSize: "0.9rem",
         }}
       >
+        {/*แสดงข้อความตามเงื่อนไข ถ้าจิรงให้แสดงใหม่สุด แต่ถ้าไม่แสดงเก่าสุด*/}
         {sortOrder === "desc" ? "🔽 ใหม่สุดก่อน" : "🔼 เก่าสุดก่อน"}
       </button>
 
@@ -123,14 +123,18 @@ function PostList({ favorites, onToggleFavorite }) {
         </p>
       )}
 
-      {sorted.map((post) => (
-        <PostCard
-          key={post.id}
-          post={post}
-          isFavorite={favorites.includes(post.id)}
-          onToggleFavorite={() => onToggleFavorite(post.id)}
-        />
-      ))}
+      {sorted.map(
+        (
+          post, //ขั้นตอนแรก จะวนลูป sorted แล้วส่งค่า post ไปยัง PostCard แล้ว render PostCard ทีละอัน โดยส่ง id, title, body ไปแสดงผล
+        ) => (
+          <PostCard
+            key={post.id}
+            post={post}
+            isFavorite={favorites.includes(post.id)} //เช็คว่าโพสต์นั้นถูกใจอยู่ไหมด้วย ถ้ามีให้ส่ง true ถ้าไม่มีให้ส่ง false
+            onToggleFavorite={() => onToggleFavorite(post.id)} //แต่ถ้ามี กดถูกใจก็ส่ง id กลับไปให้ App จัดการผ่าน
+          />
+        ),
+      )}
     </div>
   );
 }
