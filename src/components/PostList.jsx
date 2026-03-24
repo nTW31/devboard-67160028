@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PostCard from "./PostCard";
 import LoadingSpinner from "./LoadingSpinner";
 
-function PostList({ favorites, onToggleFavorite }) {
+function PostList() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,7 +70,6 @@ function PostList({ favorites, onToggleFavorite }) {
         <button
           onClick={fetchPosts}
           style={{
-            // ⭐ ปุ่มโหลดใหม่ — เรียก fetchPosts ตรงๆ
             color: "black",
             fontSize: "0.85rem",
             padding: "0.3rem 0.75rem",
@@ -127,12 +126,7 @@ function PostList({ favorites, onToggleFavorite }) {
         (
           post, //ขั้นตอนแรก จะวนลูป sorted แล้วส่งค่า post ไปยัง PostCard แล้ว render PostCard ทีละอัน โดยส่ง id, title, body ไปแสดงผล
         ) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            isFavorite={favorites.includes(post.id)} //เช็คว่าโพสต์นั้นถูกใจอยู่ไหมด้วย ถ้ามีให้ส่ง true ถ้าไม่มีให้ส่ง false
-            onToggleFavorite={() => onToggleFavorite(post.id)} //แต่ถ้ามี กดถูกใจก็ส่ง id กลับไปให้ App จัดการผ่าน
-          />
+          <PostCard key={post.id} post={post} />
         ),
       )}
     </div>
