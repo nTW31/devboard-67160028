@@ -7,7 +7,7 @@ function PostList({ favorites, onToggleFavorite }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState("desc"); // ⭐⭐ Sort
+  const [sortOrder, setSortOrder] = useState("desc");
 
   async function fetchPosts() {
     // ⭐ โหลดใหม่ — แยกออกมาเพื่อเรียกได้ทั้งจาก useEffect และปุ่ม
