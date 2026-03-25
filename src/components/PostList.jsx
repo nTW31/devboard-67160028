@@ -1,33 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PostCard from "./PostCard";
 import LoadingSpinner from "./LoadingSpinner";
+import useFetch from "./hooks/useFetch";
 
+function PostCount({ count }) {
+  return (
+    <p style={{ color: "#64748b", fontSize: "0.9rem", marginBottom: "1rem" }}>
+      โพสต์ทั้งหมด: <strong>{count}</strong> รายการ
+    </p>
+  );
+}
 function PostList() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState("desc");
-
-  async function fetchPosts() {
-    // ⭐ โหลดใหม่ — แยกออกมาเพื่อเรียกได้ทั้งจาก useEffect และปุ่ม
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-      if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
-      const data = await res.json();
-      setPosts(data.slice(0, 20));
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  //  โหลดใหม่ — แยกออกมาเพื่อเรียกได้ทั้งจาก useEffect และปุ่ม
+  const {
+    data: posts,
+    loading,
+    error,
+    refetch,
+  } = useFetch("https://jsonplaceholder.typicode.com/posts");
 
   const filtered = posts.filter((post) =>
     post.title.toLowerCase().includes(search.toLowerCase()),
@@ -68,7 +60,7 @@ function PostList() {
       >
         โพสต์ล่าสุด
         <button
-          onClick={fetchPosts}
+          onClick={refetch}
           style={{
             color: "black",
             fontSize: "0.85rem",
@@ -115,7 +107,7 @@ function PostList() {
         {/*แสดงข้อความตามเงื่อนไข ถ้าจิรงให้แสดงใหม่สุด แต่ถ้าไม่แสดงเก่าสุด*/}
         {sortOrder === "desc" ? "🔽 ใหม่สุดก่อน" : "🔼 เก่าสุดก่อน"}
       </button>
-
+      <PostCount count={posts.length} />
       {sorted.length === 0 && (
         <p style={{ color: "#718096", textAlign: "center", padding: "2rem" }}>
           ไม่พบโพสต์ที่ค้นหา
@@ -132,5 +124,4 @@ function PostList() {
     </div>
   );
 }
-
 export default PostList;
