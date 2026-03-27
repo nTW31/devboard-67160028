@@ -33,7 +33,8 @@ function AddPostForm({ onAddPost }) {
         placeholder="หัวข้อโพสต์"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        maxLength={100} //เพิ่ม จำกัดไม่ให้พิมพ์เกิน 100 ตัวอักษร
+        // ⭐ ระดับ 1 — Character Counter: maxLength จำกัดไม่ให้พิมพ์เกิน 100 ตัวอักษร
+        maxLength={100}
         style={{
           width: "100%",
           padding: "0.5rem",
@@ -44,12 +45,15 @@ function AddPostForm({ onAddPost }) {
           boxSizing: "border-box",
         }}
       />
+      {/* ⭐ ระดับ 1 — Character Counter: แสดงจำนวนตัวอักษร real-time */}
+      {/* title.length = จำนวนตัวอักษรที่พิมพ์แล้ว */}
+      {/* ถ้าเหลือน้อยกว่า 10 ตัว (100 - title.length < 10) → เปลี่ยนสีเป็นแดง เตือนผู้ใช้ */}
       <div
         style={{
           textAlign: "right",
           fontSize: "0.8rem",
           marginBottom: "0.5rem",
-          color: 100 - title.length < 10 ? "red" : "#718096", //ถ้าจริงสีแดง ตัวอักษรที่เหลือ เช่น พิมพ์ไป 90 ตัว  เหลือ 10 ถ้าเหลือน้อยกว่าเท่า 10 , ถ้ายังเหลือเยอะ  สีเทา
+          color: 100 - title.length < 10 ? "red" : "#718096",
         }}
       >
         {title.length}/100
